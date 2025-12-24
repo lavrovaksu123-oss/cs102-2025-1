@@ -10,7 +10,9 @@ Grid = tp.List[Cells]
 
 
 class GameOfLife:
-    def __init__(self, width: int = 640, height: int = 480, cell_size: int = 10, speed: int = 10) -> None:
+    def __init__(
+        self, width: int = 640, height: int = 480, cell_size: int = 10, speed: int = 10
+    ) -> None:
         self.width = width
         self.height = height
         self.cell_size = cell_size
@@ -28,32 +30,34 @@ class GameOfLife:
         self.speed = speed
 
     def draw_lines(self) -> None:
-        """Отрисовать сетку"""
+        """ Отрисовать сетку """
         for x in range(0, self.width, self.cell_size):
             pygame.draw.line(self.screen, pygame.Color("black"), (x, 0), (x, self.height))
         for y in range(0, self.height, self.cell_size):
             pygame.draw.line(self.screen, pygame.Color("black"), (0, y), (self.width, y))
 
     def run(self) -> None:
-        """Запустить игру"""
+        """ Запустить игру """
         pygame.init()
         clock = pygame.time.Clock()
         pygame.display.set_caption("Game of Life")
         self.screen.fill(pygame.Color("white"))
 
         # Создание списка клеток
-        # PUT YOUR CODE HERE
+        self.grid = self.create_grid(randomize=True)
 
         running = True
         while running:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     running = False
-            self.draw_lines()
+            self.screen.fill(pygame.Color("white"))
 
             # Отрисовка списка клеток
             # Выполнение одного шага игры (обновление состояния ячеек)
-            # PUT YOUR CODE HERE
+            self.draw_grid()
+            self.draw_lines()
+            self.grid = self.get_next_generation()
 
             pygame.display.flip()
             clock.tick(self.speed)
@@ -77,13 +81,27 @@ class GameOfLife:
         out : Grid
             Матрица клеток размером `cell_height` х `cell_width`.
         """
-        pass
+        grid: Grid = []
+        for _ in range(self.cell_height):
+            if randomize:
+                row = [random.randint(0, 1) for _ in range(self.cell_width)]
+            else:
+                row = [0] * self.cell_width
+            grid.append(row)
+        return grid
 
     def draw_grid(self) -> None:
         """
         Отрисовка списка клеток с закрашиванием их в соответствующе цвета.
         """
-        pass
+        for row in range(self.cell_height):
+            for col in range(self.cell_width):
+                color = pygame.Color("green") if self.grid[row][col] else pygame.Color("white")
+                pygame.draw.rect(
+                    self.screen,
+                    color,
+                    (col * self.cell_size, row * self.cell_size, self.cell_size, self.cell_size),
+                )
 
     def get_neighbours(self, cell: Cell) -> Cells:
         """
@@ -103,7 +121,17 @@ class GameOfLife:
         out : Cells
             Список соседних клеток.
         """
-        pass
+        row, col = cell
+        neighbours: Cells = []
+        for row_shift in (-1, 0, 1):
+            for col_shift in (-1, 0, 1):
+                if row_shift == 0 and col_shift == 0:
+                    continue
+                neighbour_row = row + row_shift
+                neighbour_col = col + col_shift
+                if 0 <= neighbour_row < self.cell_height and 0 <= neighbour_col < self.cell_width:
+                    neighbours.append(self.grid[neighbour_row][neighbour_col])
+        return neighbours
 
     def get_next_generation(self) -> Grid:
         """
@@ -114,4 +142,17 @@ class GameOfLife:
         out : Grid
             Новое поколение клеток.
         """
-        pass
+        next_generation: Grid = []
+        for row in range(self.cell_height):
+            next_row: Cells = []
+            for col in range(self.cell_width):
+                neighbours = self.get_neighbours((row, col))
+                alive_neighbours = sum(neighbours)
+                cell = self.grid[row][col]
+                if cell == 1:
+                    next_cell = 1 if alive_neighbours in (2, 3) else 0
+                else:
+                    next_cell = 1 if alive_neighbours == 3 else 0
+                next_row.append(next_cell)
+            next_generation.append(next_row)
+        return next_generation
