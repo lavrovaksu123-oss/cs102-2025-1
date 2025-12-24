@@ -136,7 +136,7 @@ def shortest_path(
             next_x, next_y = x + dx, y + dy
             if 0 <= next_x < rows and 0 <= next_y < cols and grid[next_x][next_y] == int(k) - 1:
                 x, y = next_x, next_y
-                k = int(k) - 1 
+                k = int(k) - 1
                 path.append((x, y))
                 break
         else:
