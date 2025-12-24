@@ -25,11 +25,7 @@ class GUI(UI):
         # Код из предыдущего задания.
         for row in range(self.life.rows):
             for col in range(self.life.cols):
-                color = (
-                    pygame.Color("green")
-                    if self.life.curr_generation[row][col]
-                    else pygame.Color("white")
-                )
+                color = pygame.Color("green") if self.life.curr_generation[row][col] else pygame.Color("white")
                 pygame.draw.rect(
                     self.screen,
                     color,
@@ -57,18 +53,12 @@ class GUI(UI):
                     col = x_pos // self.cell_size
                     row = y_pos // self.cell_size
                     if 0 <= row < self.life.rows and 0 <= col < self.life.cols:
-                        self.life.curr_generation[row][col] = (
-                            0 if self.life.curr_generation[row][col] else 1
-                        )
+                        self.life.curr_generation[row][col] = 0 if self.life.curr_generation[row][col] else 1
             self.screen.fill(pygame.Color("white"))
             self.draw_grid()
             self.draw_lines()
             pygame.display.flip()
-            if (
-                not paused
-                and self.life.is_changing
-                and not self.life.is_max_generations_exceeded
-            ):
+            if not paused and self.life.is_changing and not self.life.is_max_generations_exceeded:
                 # Делаем шаг только если можно продолжать.
                 self.life.step()
             clock.tick(self.speed)

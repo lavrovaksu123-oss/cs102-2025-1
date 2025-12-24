@@ -9,11 +9,11 @@ class Console(UI):
         super().__init__(life)
 
     def draw_borders(self, screen) -> None:
-        """ Отобразить рамку. """
+        """Отобразить рамку."""
         screen.border()
 
     def draw_grid(self, screen) -> None:
-        """ Отобразить состояние клеток. """
+        """Отобразить состояние клеток."""
         for row_index, row in enumerate(self.life.curr_generation):
             line = "".join("O" if cell else " " for cell in row)
             screen.addstr(row_index + 1, 1, line)
@@ -27,7 +27,7 @@ class Console(UI):
         screen.nodelay(True)
         try:
             running = True
-            while (running and self.life.is_changing and not self.life.is_max_generations_exceeded):
+            while running and self.life.is_changing and not self.life.is_max_generations_exceeded:
                 key = screen.getch()
                 if key in (ord("q"), ord("Q")):
                     # Выходим по клавишам Q/q.
