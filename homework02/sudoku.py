@@ -195,28 +195,28 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     # Создаём пустую сетку и решаем её
     grid = [["." for _ in range(9)] for _ in range(9)]
     solved = solve(grid)
-    
+
     if solved is None:
         # Fallback: создаём простое решённое судоку
-        solved = [list("123456789"[(i+j)%9] for i in range(9)) for j in range(9)]
-    
+        solved = [list("123456789"[(i + j) % 9] for i in range(9)) for j in range(9)]
+
     grid = solved
 
     # Ограничиваем N до допустимого диапазона
     N = max(0, min(N, 81))
-    
+
     # Сколько клеток нужно очистить
     cells_to_clear = 81 - N
-    
+
     # Создаём список всех позиций и перемешиваем
     positions = [(row, col) for row in range(9) for col in range(9)]
     random.shuffle(positions)
-    
+
     # Очищаем нужное количество клеток
     for i in range(cells_to_clear):
         row, col = positions[i]
         grid[row][col] = "."
-    
+
     return grid
 
 
