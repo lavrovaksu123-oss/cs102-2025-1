@@ -11,9 +11,9 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     idx = 0
     ciphertext = ""
     for i in plaintext:
-        suitable = 'A' <= i <= 'Z' or 'a' <= i <= 'z'
+        suitable = "A" <= i <= "Z" or "a" <= i <= "z"
         if suitable:
-            base_char_idx = ord('A' if 'A' <= i <= 'Z' else 'a')
+            base_char_idx = ord("A" if "A" <= i <= "Z" else "a")
             if idx >= len(keyword):
                 idx = 0
             shift = ord(keyword[idx]) - base_char_idx
@@ -38,9 +38,9 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
     idx = 0
     plaintext = ""
     for i in ciphertext:
-        suitable = 'A' <= i <= 'Z' or 'a' <= i <= 'z'
+        suitable = "A" <= i <= "Z" or "a" <= i <= "z"
         if suitable:
-            base_char_idx = ord('A' if 'A' <= i <= 'Z' else 'a')
+            base_char_idx = ord("A" if "A" <= i <= "Z" else "a")
             if idx >= len(keyword):
                 idx = 0
             shift = ord(keyword[idx]) - base_char_idx

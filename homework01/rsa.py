@@ -18,7 +18,7 @@ def is_prime(n: int) -> bool:
         return True
     if n % 2 == 0:
         return False
-    
+
     # Проверяем делители до корня из n
     i = 3
     while i * i <= n:
@@ -26,6 +26,7 @@ def is_prime(n: int) -> bool:
             return False
         i += 2
     return True
+
 
 def gcd(a: int, b: int) -> int:
     """
@@ -39,6 +40,7 @@ def gcd(a: int, b: int) -> int:
         a, b = b, a % b
     return a
 
+
 def multiplicative_inverse(e: int, phi: int) -> int:
     """
     Euclid's extended algorithm for finding the multiplicative
@@ -46,6 +48,7 @@ def multiplicative_inverse(e: int, phi: int) -> int:
     >>> multiplicative_inverse(7, 40)
     23
     """
+
     def extended_gcd(a, b):
         if a == 0:
             return b, 0, 1
@@ -53,13 +56,14 @@ def multiplicative_inverse(e: int, phi: int) -> int:
         x = y1 - (b // a) * x1
         y = x1
         return gcd, x, y
-    
+
     gcd, x, y = extended_gcd(e, phi)
     if gcd != 1:
         raise ValueError("No multiplicative inverse exists")
-    
+
     # Возвращаем положительный результат
     return x % phi
+
 
 def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:
     if not (is_prime(p) and is_prime(q)):
@@ -89,6 +93,7 @@ def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[in
     # Public key is (e, n) and private key is (d, n)
     return ((e, n), (d, n))
 
+
 # Остальной код остается без изменений
 def encrypt(pk: tp.Tuple[int, int], plaintext: str) -> tp.List[int]:
     # Unpack the key into it's components
@@ -99,13 +104,15 @@ def encrypt(pk: tp.Tuple[int, int], plaintext: str) -> tp.List[int]:
     # Return the array of bytes
     return cipher
 
+
 def decrypt(pk: tp.Tuple[int, int], ciphertext: tp.List[int]) -> str:
     # Unpack the key into its components
     key, n = pk
     # Generate the plaintext based on the ciphertext and key using a^b mod m
-    plain = [chr((char ** key) % n) for char in ciphertext]
+    plain = [chr((char**key) % n) for char in ciphertext]
     # Return the array of bytes as a string
     return "".join(plain)
+
 
 if __name__ == "__main__":
     print("RSA Encrypter/ Decrypter")
