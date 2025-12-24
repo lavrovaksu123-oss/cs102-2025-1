@@ -1,6 +1,10 @@
+import typing as tp
+
+
 def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     """
     Encrypts plaintext using a Vigenere cipher.
+
     >>> encrypt_vigenere("PYTHON", "A")
     'PYTHON'
     >>> encrypt_vigenere("python", "a")
@@ -8,25 +12,27 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     >>> encrypt_vigenere("ATTACKATDAWN", "LEMON")
     'LXFOPVEFRNHR'
     """
-    idx = 0
-    ciphertext = ""
-    for i in plaintext:
-        suitable = "A" <= i <= "Z" or "a" <= i <= "z"
-        if suitable:
-            base_char_idx = ord("A" if "A" <= i <= "Z" else "a")
-            if idx >= len(keyword):
-                idx = 0
-            shift = ord(keyword[idx]) - base_char_idx
-            ciphertext += chr((ord(i) - base_char_idx + shift) % 26 + base_char_idx)
-            idx += 1
+    result = []
+    keyword = keyword.lower()  # Приводим ключ к нижнему регистру для единообразия
+    key_len = len(keyword)
+
+    for i, char in enumerate(plaintext):
+        if "a" <= char <= "z":
+            shift = ord(keyword[i % key_len]) - ord("a")
+            result.append(chr((ord(char) - ord("a") + shift) % 26 + ord("a")))
+        elif "A" <= char <= "Z":
+            shift = ord(keyword[i % key_len].upper()) - ord("A")
+            result.append(chr((ord(char) - ord("A") + shift) % 26 + ord("A")))
         else:
-            ciphertext += i
-    return ciphertext
+            result.append(char)
+
+    return "".join(result)
 
 
 def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
     """
     Decrypts a ciphertext using a Vigenere cipher.
+
     >>> decrypt_vigenere("PYTHON", "A")
     'PYTHON'
     >>> decrypt_vigenere("python", "a")
@@ -34,18 +40,18 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
     >>> decrypt_vigenere("LXFOPVEFRNHR", "LEMON")
     'ATTACKATDAWN'
     """
+    result = []
+    keyword = keyword.lower()  # Приводим ключ к нижнему регистру для единообразия
+    key_len = len(keyword)
 
-    idx = 0
-    plaintext = ""
-    for i in ciphertext:
-        suitable = "A" <= i <= "Z" or "a" <= i <= "z"
-        if suitable:
-            base_char_idx = ord("A" if "A" <= i <= "Z" else "a")
-            if idx >= len(keyword):
-                idx = 0
-            shift = ord(keyword[idx]) - base_char_idx
-            plaintext += chr((ord(i) - base_char_idx - shift) % 26 + base_char_idx)
-            idx += 1
+    for i, char in enumerate(ciphertext):
+        if "a" <= char <= "z":
+            shift = ord(keyword[i % key_len]) - ord("a")
+            result.append(chr((ord(char) - ord("a") - shift) % 26 + ord("a")))
+        elif "A" <= char <= "Z":
+            shift = ord(keyword[i % key_len].upper()) - ord("A")
+            result.append(chr((ord(char) - ord("A") - shift) % 26 + ord("A")))
         else:
-            plaintext += i
-    return plaintext
+            result.append(char)
+
+    return "".join(result)
