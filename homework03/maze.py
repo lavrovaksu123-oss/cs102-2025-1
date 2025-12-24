@@ -131,12 +131,12 @@ def shortest_path(
 
     k = grid[x][y]
     path = [(x, y)]
-    while k > 1:
+    while int(k) > 1:
         for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             next_x, next_y = x + dx, y + dy
-            if 0 <= next_x < rows and 0 <= next_y < cols and grid[next_x][next_y] == k - 1:
+            if 0 <= next_x < rows and 0 <= next_y < cols and grid[next_x][next_y] == int(k) - 1:
                 x, y = next_x, next_y
-                k -= 1
+                k = int(k) - 1 
                 path.append((x, y))
                 break
         else:
