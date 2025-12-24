@@ -6,7 +6,7 @@ T = tp.TypeVar("T")
 
 
 def read_sudoku(path: tp.Union[str, pathlib.Path]) -> tp.List[tp.List[str]]:
-    """ Прочитать Судоку из указанного файла """
+    """Прочитать Судоку из указанного файла"""
     path = pathlib.Path(path)  # Преобразуем путь в объект Path
     with path.open() as f:
         puzzle = f.read()  # Читаем содержимое файла
@@ -14,22 +14,18 @@ def read_sudoku(path: tp.Union[str, pathlib.Path]) -> tp.List[tp.List[str]]:
 
 
 def create_grid(puzzle: str) -> tp.List[tp.List[str]]:
-    """ Преобразовать строку в сетку 9x9 """
+    """Преобразовать строку в сетку 9x9"""
     digits = [c for c in puzzle if c in "123456789."]  # Оставляем только цифры и точки
     grid = group(digits, 9)  # Группируем в 9 строк по 9 элементов
     return grid
 
 
 def display(grid: tp.List[tp.List[str]]) -> None:
-    """Вывод Судоку """
+    """Вывод Судоку"""
     width = 2  # Ширина ячейки
     line = "+".join(["-" * (width * 3)] * 3)  # Горизонтальная линия-разделитель
     for row in range(9):
-        print(
-            "".join(
-                grid[row][col].center(width) + ("|" if str(col) in "25" else "") for col in range(9)
-            )
-        )
+        print("".join(grid[row][col].center(width) + ("|" if str(col) in "25" else "") for col in range(9)))
         if str(row) in "25":  # После 3-й и 6-й строки
             print(line)
     print()
@@ -43,7 +39,7 @@ def group(values: tp.List[T], n: int) -> tp.List[tp.List[T]]:
     >>> group([1,2,3,4,5,6,7,8,9], 3)
     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
-    return [values[i * n:(i + 1) * n] for i in range(n)]
+    return [values[i * n : (i + 1) * n] for i in range(n)]
 
 
 def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
@@ -87,11 +83,7 @@ def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[s
     block_row = (row // 3) * 3
     block_col = (col // 3) * 3
     # Собираем все значения из блока
-    return [
-        grid[block_row + i][block_col + j]
-        for i in range(3)
-        for j in range(3)
-    ]
+    return [grid[block_row + i][block_col + j] for i in range(3) for j in range(3)]
 
 
 def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[int, int]]:
@@ -106,7 +98,7 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
     # Проходим по всем клеткам сетки
     for row in range(len(grid)):
         for col in range(len(grid[row])):
-            if grid[row][col] == '.':  # Нашли пустую клетку
+            if grid[row][col] == ".":  # Нашли пустую клетку
                 return (row, col)
     return None  # Пустых клеток нет
 
@@ -121,7 +113,7 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
     >>> values == {'2', '5', '9'}
     True
     """
-    all_values = set('123456789')  # Все возможные цифры
+    all_values = set("123456789")  # Все возможные цифры
     row_values = set(get_row(grid, pos))  # Цифры в строке
     col_values = set(get_col(grid, pos))  # Цифры в столбце
     block_values = set(get_block(grid, pos))  # Цифры в блоке
@@ -129,7 +121,7 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
 
 
 def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
-    """ Решение пазла, заданного в grid """
+    """Решение пазла, заданного в grid"""
     """ Как решать Судоку?
         1. Найти свободную позицию
         2. Найти все возможные значения, которые могут находиться на этой позиции
@@ -142,59 +134,59 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     """
     # 1. Найти свободную позицию
     pos = find_empty_positions(grid)
-    
+
     # Базовый случай: если нет свободных позиций, пазл решён
     if pos is None:
         return grid
-    
+
     row, col = pos
-    
+
     # 2. Найти все возможные значения для этой позиции
     possible_values = find_possible_values(grid, pos)
-    
+
     # Если нет возможных значений — тупик, нужен откат
     if not possible_values:
         return None
-    
+
     # 3. Для каждого возможного значения
     for value in possible_values:
         # 3.1. Поместить это значение на эту позицию
         grid[row][col] = value
-        
+
         # 3.2. Продолжить решать оставшуюся часть пазла
         result = solve(grid)
-        
+
         # Если решение найдено — вернуть его
         if result is not None:
             return result
-        
+
         # Откат: если решение не найдено, вернуть пустое значение
-        grid[row][col] = '.'
-    
+        grid[row][col] = "."
+
     # Если ни одно значение не подошло — тупик
     return None
 
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
-    """ Если решение solution верно, то вернуть True, в противном случае False """
-    expected = set('123456789')  # Эталон: все цифры от 1 до 9
-    
+    """Если решение solution верно, то вернуть True, в противном случае False"""
+    expected = set("123456789")  # Эталон: все цифры от 1 до 9
+
     # Проверка всех строк
     for row in range(9):
         if set(get_row(solution, (row, 0))) != expected:
             return False
-    
+
     # Проверка всех столбцов
     for col in range(9):
         if set(get_col(solution, (0, col))) != expected:
             return False
-    
+
     # Проверка всех блоков 3x3
     for block_row in range(0, 9, 3):
         for block_col in range(0, 9, 3):
             if set(get_block(solution, (block_row, block_col))) != expected:
                 return False
-    
+
     return True
 
 
@@ -219,26 +211,26 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     >>> check_solution(solution)
     True
     """
-    
-    # Создаём пустую сетку и решаем её 
-    grid = [['.' for _ in range(9)] for _ in range(9)]
+
+    # Создаём пустую сетку и решаем её
+    grid = [["." for _ in range(9)] for _ in range(9)]
     grid = solve(grid)
-    
+
     # Ограничиваем N до допустимого диапазона
     N = max(0, min(N, 81))
-    
+
     # Сколько клеток нужно очистить
     cells_to_clear = 81 - N
-    
+
     # Создаём список всех позиций и перемешиваем
     positions = [(row, col) for row in range(9) for col in range(9)]
     random.shuffle(positions)
-    
+
     # Очищаем нужное количество клеток
     for i in range(cells_to_clear):
         row, col = positions[i]
-        grid[row][col] = '.'
-    
+        grid[row][col] = "."
+
     return grid
 
 
